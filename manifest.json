@@ -1,0 +1,31 @@
+{
+  "name": "ecc-lite-embedded-fpga-ds",
+  "version": "1.0.0",
+  "skills": [
+    "project-planner",
+    "datasheet-researcher",
+    "embedded-debugger",
+    "verilog-reviewer",
+    "data-science-reviewer",
+    "code-reviewer",
+    "test-verifier",
+    "github-workflow"
+  ],
+  "shared_rules": [
+    "rules/engineering-standards.md"
+  ],
+  "focus": [
+    "embedded",
+    "esp32",
+    "stm32",
+    "avr",
+    "verilog",
+    "fpga",
+    "python",
+    "pandas",
+    "numpy",
+    "machine-learning",
+    "git",
+    "github"
+  ]
+}
