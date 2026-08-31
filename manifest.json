@@ -1,7 +1,9 @@
 {
   "name": "ecc-lite-embedded-fpga-ds",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "router": "skills/ecc-lite-router/SKILL.md",
   "skills": [
+    "ecc-lite-router",
     "project-planner",
     "datasheet-researcher",
     "embedded-debugger",
@@ -14,6 +16,7 @@
   "shared_rules": [
     "rules/engineering-standards.md"
   ],
+  "chatgpt_invocation": "@GitHub ECC Lite: <request>",
   "focus": [
     "embedded",
     "esp32",
