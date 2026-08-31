@@ -9,8 +9,32 @@ A compact skill pack adapted from workflow ideas in Everything Claude Code (ECC)
 
 This pack intentionally excludes web/frontend/marketing/agent-orchestration material.
 
+## Quick use in ChatGPT
+
+Use this short convention:
+
+`@GitHub ECC Lite: <your request>`
+
+Examples:
+
+`@GitHub ECC Lite: kiểm tra project ESP32 này và tìm nguyên nhân cảm biến đọc sai`
+
+`@GitHub ECC Lite: xem testbench decoder 3-to-8 này có đúng không`
+
+`@GitHub ECC Lite: review notebook fraud detection và kiểm tra leakage`
+
+`@GitHub ECC Lite: sửa xong rồi kiểm tra và commit lên GitHub`
+
+The `ecc-lite-router` skill is the dispatcher. It selects the smallest useful skill chain, so you do not need to remember every skill name.
+
+Important: storing this repository on GitHub does not globally install the skills into ChatGPT. The `@GitHub ECC Lite: ...` convention tells the assistant to consult this repository/router when the task uses GitHub-connected data. In environments that support local skill discovery, install the `skills/` folder so the skill descriptions can be discovered automatically.
+
 ## Included skills
 
+Router:
+- `ecc-lite-router` — classify the request and choose the required skills.
+
+Domain/workflow skills:
 1. `project-planner`
 2. `datasheet-researcher`
 3. `embedded-debugger`
@@ -25,24 +49,31 @@ Shared rule:
 
 ## Recommended automatic workflow
 
-For a new task:
+The router follows this principle:
 
-`project-planner`
-→ `datasheet-researcher` when technical facts are uncertain
-→ implementation
-→ domain reviewer/debugger
-→ `test-verifier`
-→ `code-reviewer`
-→ `github-workflow`
+`understand task → choose primary skill → add only needed support skills → verify → Git if requested`
 
 ### Embedded
-`project-planner → datasheet-researcher → embedded-debugger → test-verifier → code-reviewer`
+`project-planner? → datasheet-researcher? → embedded-debugger → test-verifier → code-reviewer? → github-workflow?`
 
 ### FPGA
-`project-planner → datasheet-researcher → verilog-reviewer → test-verifier → code-reviewer`
+`project-planner? → datasheet-researcher? → verilog-reviewer → test-verifier → github-workflow?`
 
 ### Data Science
-`project-planner → data-science-reviewer → test-verifier → code-reviewer`
+`project-planner? → data-science-reviewer → test-verifier → code-reviewer? → github-workflow?`
+
+`?` means optional. The router should not activate every skill automatically.
+
+## Routing examples
+
+| Request | Skills selected |
+|---|---|
+| ESP32 sensor behaves intermittently | `embedded-debugger`, optionally `datasheet-researcher`, then `test-verifier` |
+| STM32 timer/interrupt issue | `embedded-debugger`, `datasheet-researcher`, `test-verifier` |
+| Verilog RTL/testbench issue | `verilog-reviewer`, `test-verifier` |
+| Fraud Detection notebook review | `data-science-reviewer`, optionally `code-reviewer`, `test-verifier` |
+| Unfamiliar repository | `code-reviewer`, optionally `project-planner` |
+| Commit/push/PR after a fix | domain skill, `test-verifier`, `github-workflow` |
 
 ## Claude Code installation
 
@@ -68,7 +99,7 @@ Each skill uses a descriptive `description` field so a compatible harness can au
 
 ## How to use effectively
 
-Do not activate all eight at once. Use the smallest chain that fits the problem.
+Do not activate all skills at once. Use the smallest chain that fits the problem.
 
 Examples:
 
@@ -83,12 +114,12 @@ Examples:
 
 **"Notebook fraud detection của tôi có đúng không?"**
 - `data-science-reviewer`
-- `code-reviewer`
+- `code-reviewer` when code-level impact needs inspection
 - `test-verifier`
 
 **"Repo này tôi mới clone, bắt đầu ở đâu?"**
-- `project-planner`
-- `code-reviewer` (its reconnaissance/search phase)
+- `code-reviewer` reconnaissance
+- `project-planner` when an implementation plan is needed
 
 ## Design choices
 
